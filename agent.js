@@ -10,40 +10,36 @@
 'use strict';
 
 var log = require('logule').init(module, 'Agent'),
-    nats = require('nats').connect(),
+    EventEmitter = require('events').EventEmitter,
+    emitter = new EventEmitter,
     WebSocket = require('ws');
 
 var socket = null,
     currentState = 'STOPPED',
     config = {};
 
-function thinkCommandHandler(data, flags) {
-
-    log.debug('Received message: '+data);
+function commandHandler(data, flags) {
 
     try {
-        var message = JSON.parse(data),
+        var message = JSON.parse(data).data,
             msgHeader = message.header || undefined,
             msgPayload = message.payload || undefined;
 
-        log.info('msgHeader: %s, msgPayload: %s', JSON.stringify(msgHeader), JSON.stringify(msgPayload));
         if (msgHeader && msgPayload) {
             switch (msgHeader.type) {
                 case 'modules':
                     // publish command to the specified module
-                    var moduleType = msgPayload.type || undefined,
-                        moduelCommand = msgPayload.command || undefined;
-                    if (moduleType && moduelCommand) {
-                        nats.publish(moduleType, moduelCommand);
+                    var type = msgPayload.type || undefined,
+                        command = msgPayload.command || undefined;
+                    if (type && command) {
+                        emitter.emit('moduleCommand', JSON.stringify({type: type, command: command}));
                     } else {
-                        log.error('Malformed module command!');
+                        log.error('Malformed module command: '+JSON.stringify(message));
                     }
                     break;
                 default:
                     log.error('Unknown message type received: '+msgHeader);
             }
-        } else {
-            log.error('Invalid request format');
         }
     } catch (err) {
         log.error('Unexpected error: '+err);
@@ -54,13 +50,15 @@ function registerModulesToThink(moduleList) {
 
 }
 
-function publishToThink(topic, message) {
-    if (socket && socket.readyState === WebSocket.CONNECTING) {
+function publish(topic, message) {
+    if (socket && socket.readyState === WebSocket.OPEN) {
         var event = {
-            topic: topic,
-            mesasge: message
+            topic: config.id,
+            data: {
+                topic: topic,
+                message: message
+            }
         };
-
         socket.send(JSON.stringify(event), function(error) {
             if (error) {
                 log.error('Error occurred while publising event: %s, ERRMSG: %s', JSON.stringify(event), error);
@@ -78,7 +76,7 @@ function publishToThink(topic, message) {
  * which URL is given as the third argument 
  *
  */
-function connectToThink(id) {
+function connect(id) {
 
     if (!id) {
         log.error('Sense Id is not provided.');
@@ -88,14 +86,11 @@ function connectToThink(id) {
     socket = new WebSocket(config.url);
 
     function reconnect(id) {
-        if (socket) {
-            // clean up the old socket if it exists
-            socket.destroy();
-            socket = null;
-        }
+        // clean up the old socket if any
+        destroyConnection();
         setTimeout(function() {
-            connectToThink(id);
-        }, config.options.hasOwnProperty('reconnectInterval') ? config.options.reconnectInterval : 3);
+            connect(id);
+        }, config.options.hasOwnProperty('reconnectInterval') ? config.options.reconnectInterval : 3000);
     }
 
     socket.on('open', function () {
@@ -103,7 +98,7 @@ function connectToThink(id) {
         currentState = 'RUNNING';
     });
 
-    socket.on('message', thinkCommandHandler);
+    socket.on('message', commandHandler);
 
     socket.on('error', function (err) {
         log.error('Connection to Think is broken! ERRMSG: ' + err);
@@ -123,7 +118,7 @@ function connectToThink(id) {
 }
 
 function init(thinkUrl, senseId, options) {
-    var url = thinkUrk || undefined,
+    var url = thinkUrl || undefined,
         id = senseId || undefined;
     currentState = 'INITIALING';
     if (!url) {
@@ -134,24 +129,32 @@ function init(thinkUrl, senseId, options) {
     config.url = url;
     config.id = id;
     config.options = options || {};
+
 }
 
 function start() {
     currentState = 'CONNECTING';
-    connectToThink(config.id);
+    connect(config.id);
 }
 
 function stop() {
+    currentState = 'STOPPED';
+    destroyConnection();
+}
+
+function destroyConnection() {
     if (socket) {
         socket.close();
-        socket.destroy();
+        socket = null;
     }
 }
+
 
 module.exports = {
     init: init,
     start: start,
     stop: stop,
-    publishToThink: publishToThink,
-    state: currentState
+    publish: publish,
+    events: emitter,
+    getState: function () { return currentState; }
 };

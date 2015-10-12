@@ -1,8 +1,9 @@
 var agent = require('./agent'),
+    fs = require('fs'),
     log = require('logule').init(module, 'App');
 
 process.on('SIGTERM', function() {
-    if (agent.state === 'RUNNING') {
+    if (agent.getState() === 'RUNNING') {
         agent.stop();
     }
 });
@@ -24,9 +25,13 @@ try {
     log.error('Error: '+e);
 }
 
+agent.events.on('moduleCommand', function(command) {
+    log.info('Command: '+command);
+});
+
 // for testing
-setTimeout(function() {
-    if (agent.state === 'RUNNING') {
+setInterval(function() {
+    if (agent.getState() === 'RUNNING') {
         agent.publish('temp', JSON.stringify({
             currentTemp: 25
         }));
