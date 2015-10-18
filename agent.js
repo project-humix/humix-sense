@@ -29,10 +29,12 @@ function commandHandler(data, flags) {
             switch (msgHeader.type) {
                 case 'modules':
                     // publish command to the specified module
-                    var type = msgPayload.type || undefined,
-                        command = msgPayload.command || undefined;
-                    if (type && command) {
-                        emitter.emit('moduleCommand', JSON.stringify({type: type, command: command}));
+                    var commandType = msgPayload.commandType || undefined,
+                        commandName = msgPayload.commandName || undefined,
+                        commandData = msgPayload.commandData || undefined;
+                    if (commandType && commandName && commandData) {
+                        var topic = 'humix.sense.'+commandType+'.command.'+commandName;
+                        emitter.emit(topic, commandData);
                     } else {
                         log.error('Malformed module command: '+JSON.stringify(message));
                     }

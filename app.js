@@ -25,8 +25,8 @@ try {
     log.error('Error: '+e);
 }
 
-agent.events.on('moduleCommand', function(command) {
-    log.info('Command: '+command);
+agent.events.on('humix.sense.speech.command.play', function(data) {
+    log.info('Command: '+JSON.stringify(data));
 });
 
 // for testing
