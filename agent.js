@@ -95,7 +95,7 @@ function connect(id) {
 
     socket.on('open', function () {
         log.info('Connected to Think successfully.');
-        currentState = 'RUNNING';
+        currentState = 'CONNECTED';
     });
 
     socket.on('message', commandHandler);

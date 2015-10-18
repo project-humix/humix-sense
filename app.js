@@ -31,7 +31,7 @@ agent.events.on('moduleCommand', function(command) {
 
 // for testing
 setInterval(function() {
-    if (agent.getState() === 'RUNNING') {
+    if (agent.getState() === 'CONNECTED') {
         agent.publish('temp', JSON.stringify({
             currentTemp: 25
         }));
