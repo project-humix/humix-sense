@@ -51,12 +51,13 @@ function registerModulesToThink(moduleList) {
 
 }
 
-function publish(topic, message) {
+function publish(module, event, message) {
     if (socket && socket.readyState === WebSocket.OPEN) {
         var event = {
             topic: config.id,
             data: {
-                topic: topic,
+                eventType: module,
+                eventName: event,
                 message: message
             }
         };

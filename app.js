@@ -80,17 +80,18 @@ nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
     for ( var i in requestModule.events){
 
         var event = requestModule.events[i];
+        var module = requestModule.moduleName;
         var topic = eventPrefix + "." + event;
 
         log.info("subscribing topic:"+ topic);
 
-        (function(topic,event){
+        (function(topic,module,event){
             
             nats.subscribe(topic, function(data){
                 log.info('about to publish topic:'+topic+", data:"+data);
-                agent.publish(event,data);
+                agent.publish(module, event, data);
             });
-        })(topic,event);
+        })(topic,module,event);
         
     }
 
