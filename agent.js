@@ -29,10 +29,11 @@ function commandHandler(data, flags) {
             switch (msgHeader.type) {
                 case 'modules':
                     // publish command to the specified module
-                    var type = msgPayload.type || undefined,
-                        command = msgPayload.command || undefined;
-                    if (type && command) {
-                        emitter.emit('moduleCommand', JSON.stringify({type: type, command: command}));
+                    var commandType = msgPayload.commandType || undefined,
+                        commandName = msgPayload.commandName || undefined,
+                        commandData = msgPayload.commandData || undefined;
+                    if (commandType && commandName && commandData) {
+                        emitter.emit('module.command', msgPayload);
                     } else {
                         log.error('Malformed module command: '+JSON.stringify(message));
                     }
@@ -95,7 +96,7 @@ function connect(id) {
 
     socket.on('open', function () {
         log.info('Connected to Think successfully.');
-        currentState = 'RUNNING';
+        currentState = 'CONNECTED';
     });
 
     socket.on('message', commandHandler);

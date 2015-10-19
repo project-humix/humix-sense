@@ -22,8 +22,6 @@ if (!senseId) {
     }
 }
 
-
-
 try {
 
     // TODO : replace with think URL
@@ -33,44 +31,80 @@ try {
     log.error('Error: '+e);
 }
 
-agent.events.on('moduleCommand', function(command) {
+agent.events.on('module.command', function(data) {
 
-    log.info('Command: '+command);
+    log.info('Command: '+JSON.stringify(data));
 
-    var cmd = JSON.parse(command);
+    var module = data.commandType;
+    var command = data.commandName;
+    var topic = 'humix.sense.'+module+'.command.'+command;
 
+    log.info('topic:'+topic);
+    log.info('data:'+data.commandData);
 
-    var moduleType = cmd.type;
-    var mdouleCommand = cmd.command;
-    var moduleData = cmd.data;
+    if(modules.hasOwnProperty(module) &&  modules[module].commands.indexOf(command) != -1 ){
 
-    nats.publish('humix.sense.neopixel.command.feel',command);
-    /*
-    if(moduleCommand.type === 'neopixel'){
+        nats.publish(topic,JSON.stringify(data.commandData));
+        log.info(' publish command');
 
-        
-    }*/
-    
+    }else{
+
+        log.info('skip command');
+    }
+
 });
 
 
+// handle module events
+
+nats.subscribe('humix.sense.*.event.*', function(data){
+
+    log.info('receive module event:'+JSON.stringify(data));
+
+    
+    
+})
 
 // handle module registration
 nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
     log.info("Receive registration :"+ request);
+
+    var requestModule = JSON.parse(request);
+    
+    modules[requestModule.moduleName] = requestModule;
+    // TODO : propagate registration information to cloud
+
+
+    var eventPrefix = 'humix.sense.'+requestModule.moduleName+".event";
+
+    for ( var i in requestModule.events){
+
+        var event = requestModule.events[i];
+        var topic = eventPrefix + "." + event;
+
+        log.info("subscribing topic:"+ topic);
+
+        (function(topic,event){
+            
+            nats.subscribe(topic, function(data){
+                log.info('about to publish topic:'+topic+", data:"+data);
+                agent.publish(event,data);
+            });
+        })(topic,event);
+        
+    }
+
+    
+    console.log('current modules:'+JSON.stringify(modules));
     nats.publish(replyto,'got you');
 
-
-    modules[request.module] = request;
-    // TODO : propagate registration information to cloud
-    
 });
 
 /*
 
 // for testing
 setInterval(function() {
-    if (agent.getState() === 'RUNNING') {
+    if (agent.getState() === 'CONNECTED') {
         agent.publish('temp', JSON.stringify({
             currentTemp: 25
         }));
