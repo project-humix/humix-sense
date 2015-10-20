@@ -1,7 +1,8 @@
 var agent = require('./agent'),
     nats = require('nats').connect(),
     fs = require('fs'),
-    log = require('logule').init(module, 'App');
+    log = require('logule').init(module, 'App'),
+    config = require('config.js')
 
 
 var modules = {};
@@ -14,19 +15,13 @@ process.on('SIGTERM', function() {
 
 var senseId = process.argv[2] || undefined;
 if (!senseId) {
-    try {
-        senseId = fs.readFileSync('./sense.txt').toString().trim();
-    } catch (e) {
-        log.error('Error: '+e);
-        process.exit(-1);
-    }
+    senseId = config.senseId || 'default';
 }
 
 try {
-
-    // TODO : replace with think URL
-    agent.init('http://localhost:1880', senseId, {autoreconnect: true});
+    agent.init(config.thinkURL, senseId, {autoreconnect: true});
     agent.start();
+
 } catch (e) {
     log.error('Error: '+e);
 }
