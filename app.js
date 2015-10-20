@@ -35,7 +35,7 @@ agent.events.on('module.command', function(data) {
     var topic = 'humix.sense.'+module+'.command.'+command;
 
     log.info('topic:'+topic);
-    log.info('data:'+data.commandData);
+    log.info('data:'+JSON.stringify(data.commandData));
 
     if(modules.hasOwnProperty(module) &&  modules[module].commands.indexOf(command) != -1 ){
 
@@ -96,15 +96,11 @@ nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
 
 });
 
-/*
 
 // for testing
 setInterval(function() {
     if (agent.getState() === 'CONNECTED') {
-        agent.publish('temp', JSON.stringify({
-            currentTemp: 25
-        }));
+        agent.publish('temp', 'currentTemp', 25);
     }
 }, 3000);
 
-*/
