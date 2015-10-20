@@ -101,15 +101,11 @@ nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
 
 });
 
-/*
 
 // for testing
 setInterval(function() {
     if (agent.getState() === 'CONNECTED') {
-        agent.publish('temp', JSON.stringify({
-            currentTemp: 25
-        }));
+        agent.publish('temp', 'currentTemp', 25);
     }
 }, 3000);
 
-*/
