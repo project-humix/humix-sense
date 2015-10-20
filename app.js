@@ -25,7 +25,7 @@ if (!senseId) {
 try {
 
     // TODO : replace with think URL
-    agent.init('http://localhost:1880/comms', senseId, {autoreconnect: true});
+    agent.init('http://localhost:1880', senseId, {autoreconnect: true});
     agent.start();
 } catch (e) {
     log.error('Error: '+e);

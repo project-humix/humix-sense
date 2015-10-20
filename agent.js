@@ -120,18 +120,29 @@ function connect(id) {
 }
 
 function init(thinkUrl, senseId, options) {
-    var url = thinkUrl || undefined,
-        id = senseId || undefined;
+
+    var url = null;
+    if (thinkUrl) {
+        if (typeof thinkUrl === 'string') {
+            if (thinkUrl.slice(-1) !== '/') {
+                url = thinkUrl+'/comms';
+            } else {
+                url = thinkUrl+'comms';
+            }
+        } else {
+            throw new Error('Invalid Url format');
+        }
+    }
+
     currentState = 'INITIALING';
     if (!url) {
         throw new Error('Url is not provided');
-    } else if (!id) {
+    } else if (!senseId) {
         throw new Error('Sense Id is not provided');
     }
     config.url = url;
-    config.id = id;
+    config.id = senseId || undefined;
     config.options = options || {};
-
 }
 
 function start() {
