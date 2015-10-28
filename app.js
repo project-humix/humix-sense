@@ -90,7 +90,10 @@ nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
         
     }
 
+    // register the module to humix-think
     
+    agent.publish('humix-think', 'moduleRegister', requestModule); 
+
     console.log('current modules:'+JSON.stringify(modules));
     nats.publish(replyto,'got you');
 
