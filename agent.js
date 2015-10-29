@@ -54,7 +54,7 @@ function registerModulesToThink(moduleList) {
 function publish(module, event, message) {
     if (socket && socket.readyState === WebSocket.OPEN) {
         var event = {
-            topic: config.id,
+            senseId: config.id,
             data: {
                 eventType: module,
                 eventName: event,
