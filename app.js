@@ -90,6 +90,9 @@ nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
 
     }
 
+    // register the module to humix-think
+
+    agent.publish('humix-think', 'moduleRegister', requestModule);
 
     console.log('current modules:'+JSON.stringify(modules));
     nats.publish(replyto,'got you');
@@ -104,7 +107,6 @@ setInterval(function() {
         agent.publish('temp', 'currentTemp', 25);
     }
 }, 3000);
-*/
 
 setTimeout(function() {
     if (agent.getState() === 'CONNECTED') {
@@ -120,4 +122,5 @@ setTimeout(function() {
         });
     }
 }, 2000);
+*/
 

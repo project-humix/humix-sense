@@ -75,7 +75,7 @@ function publish(module, event, message) {
  * WebSocket client
  *
  * Remote WebSocket server is the place that provides the dynamic routing data,
- * which URL is given as the third argument 
+ * which URL is given as the third argument
  *
  */
 function connect(id) {
@@ -125,9 +125,9 @@ function init(thinkUrl, senseId, options) {
     if (thinkUrl) {
         if (typeof thinkUrl === 'string') {
             if (thinkUrl.slice(-1) !== '/') {
-                url = thinkUrl+'/comms';
+                url = thinkUrl+'/node-red/comms';
             } else {
-                url = thinkUrl+'comms';
+                url = thinkUrl+'node-red/comms';
             }
         } else {
             throw new Error('Invalid Url format');
