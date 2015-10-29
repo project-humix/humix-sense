@@ -2,7 +2,7 @@ var agent = require('./agent'),
     nats = require('nats').connect(),
     fs = require('fs'),
     log = require('logule').init(module, 'App'),
-    config = require('config.js')
+    config = require('./config')
 
 
 var modules = {};
@@ -56,8 +56,8 @@ nats.subscribe('humix.sense.*.event.*', function(data){
 
     log.info('receive module event:'+JSON.stringify(data));
 
-    
-    
+
+
 })
 
 // handle module registration
@@ -65,7 +65,7 @@ nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
     log.info("Receive registration :"+ request);
 
     var requestModule = JSON.parse(request);
-    
+
     modules[requestModule.moduleName] = requestModule;
     // TODO : propagate registration information to cloud
 
@@ -81,16 +81,16 @@ nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
         log.info("subscribing topic:"+ topic);
 
         (function(topic,module,event){
-            
+
             nats.subscribe(topic, function(data){
                 log.info('about to publish topic:'+topic+", data:"+data);
                 agent.publish(module, event, data);
             });
         })(topic,module,event);
-        
+
     }
 
-    
+
     console.log('current modules:'+JSON.stringify(modules));
     nats.publish(replyto,'got you');
 
@@ -98,9 +98,26 @@ nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
 
 
 // for testing
+/*
 setInterval(function() {
     if (agent.getState() === 'CONNECTED') {
         agent.publish('temp', 'currentTemp', 25);
     }
 }, 3000);
+*/
+
+setTimeout(function() {
+    if (agent.getState() === 'CONNECTED') {
+        agent.publish('humix-think', 'registerModule', {
+            moduleName: 'neopixel',
+            commands: ['feel', 'mode', 'color'],
+            events: ['event1']
+        });
+        agent.publish('humix-think', 'registerModule', {
+            moduleName: 'tts',
+            commands: ['command1', 'command2'],
+            events: ['event1', 'event2']
+        });
+    }
+}, 2000);
 
