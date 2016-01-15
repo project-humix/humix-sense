@@ -66,8 +66,13 @@ nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
 
     var requestModule = JSON.parse(request);
 
+    if(modules.hasOwnProperty(requestModule.moduleName)){
+        console.log('Module [' + requestModule.moduleName + '] already register. Skip');
+        nats.publish(replyto,'module already registered');
+        return;
+    }
+
     modules[requestModule.moduleName] = requestModule;
-    // TODO : propagate registration information to cloud
 
 
     var eventPrefix = 'humix.sense.'+requestModule.moduleName+".event";
@@ -95,8 +100,8 @@ nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
     agent.publish('humix-think', 'registerModule', requestModule);
 
     console.log('current modules:'+JSON.stringify(modules));
-    nats.publish(replyto,'got you');
-
+    nats.publish(replyto,'module registration succeed');
+    
 });
 
 
