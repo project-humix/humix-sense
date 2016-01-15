@@ -92,7 +92,7 @@ nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
 
     // register the module to humix-think
 
-    agent.publish('humix-think', 'moduleRegister', requestModule);
+    agent.publish('humix-think', 'registerModule', requestModule);
 
     console.log('current modules:'+JSON.stringify(modules));
     nats.publish(replyto,'got you');
@@ -107,9 +107,10 @@ setInterval(function() {
         agent.publish('temp', 'currentTemp', 25);
     }
 }, 3000);
-
+*/
 setTimeout(function() {
     if (agent.getState() === 'CONNECTED') {
+        console.log('connected....');
         agent.publish('humix-think', 'registerModule', {
             moduleName: 'neopixel',
             commands: ['feel', 'mode', 'color'],
@@ -122,5 +123,4 @@ setTimeout(function() {
         });
     }
 }, 2000);
-*/
 
