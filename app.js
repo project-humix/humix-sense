@@ -113,6 +113,8 @@ setInterval(function() {
     }
 }, 3000);
 */
+
+/*
 setTimeout(function() {
     if (agent.getState() === 'CONNECTED') {
         console.log('connected....');
@@ -128,4 +130,4 @@ setTimeout(function() {
         });
     }
 }, 2000);
-
+*/
