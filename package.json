@@ -16,7 +16,9 @@
     "mocha": "latest",
     "nats": "^0.4.4",
     "node-uuid": "latest",
+    "path": "^0.12.7",
     "request": "^2.40.0",
+    "respawn": "^2.3.0",
     "should": "latest",
     "ws": "0.7.2"
   }

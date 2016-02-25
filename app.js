@@ -1,7 +1,9 @@
 var agent = require('./agent'),
     nats = require('nats').connect(),
     fs = require('fs'),
-    log = require('logule').init(module, 'App'),
+    path = require("path"),
+    respawn = require('respawn'),
+    log = require('logule').init(module, 'Humix-Sense'),
     config = require('./config')
 
 
@@ -15,8 +17,10 @@ process.on('SIGTERM', function() {
 
 var senseId = process.argv[2] || undefined;
 if (!senseId) {
-    senseId = config.senseId || 'default';
+    senseId = config.senseId || 'humix';
 }
+
+humixSenseInit();
 
 try {
     agent.init(config.thinkURL, senseId, {autoreconnect: true});
@@ -24,6 +28,57 @@ try {
 
 } catch (e) {
     log.error('Error: '+e);
+}
+
+function humixSenseInit(){
+
+    log.info("Init Humix Sense");
+
+    // starting core modules
+
+    var coreModulePath = './modules/core/';
+
+    fs.readdir(coreModulePath,function(err, coreModules){
+
+        if(err){
+
+            log.error('Failed to read core modules. Error:'+err);
+            return;
+        }
+        
+        coreModules.map(function (m) {
+        return path.join(coreModulePath, m);
+            
+        }).filter(function (m) {
+            return fs.statSync(m).isDirectory();
+            
+        }).forEach(function (m) {
+            console.log("module : %s", m);
+
+            var p = respawn(['npm','start'],{cwd:m});
+
+            p.on('stdout', function(data) {
+                log.info('stdout:'+data);
+                
+            });
+
+            p.on('stderr', function(data) {
+                log.info('stderr:'+data);
+                
+            });
+
+            p.on('spawn', function () {
+                log.info('process spawned')
+            });
+
+            p.on('exit', function (code, signal) {
+                log.error({msg: 'process exited, code: ' + code + ' signal: ' + signal});
+                
+            });
+            p.start();
+        });
+ 
+    });
 }
 
 agent.events.on('module.command', function(data) {
@@ -40,7 +95,7 @@ agent.events.on('module.command', function(data) {
     if(modules.hasOwnProperty(module) &&  modules[module].commands.indexOf(command) != -1 ){
 
         nats.publish(topic,JSON.stringify(data.commandData));
-        log.info(' publish command');
+        log.info('publish command');
 
     }else{
 
@@ -51,14 +106,13 @@ agent.events.on('module.command', function(data) {
 
 
 // handle module events
-
+/*
 nats.subscribe('humix.sense.*.event.*', function(data){
 
     log.info('receive module event:'+JSON.stringify(data));
 
-
-
 })
+*/
 
 // handle module registration
 nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
