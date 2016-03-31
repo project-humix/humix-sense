@@ -1,0 +1,23 @@
+{
+  "name": "gw-agent",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "node test.js"
+  },
+  "author": "Daniel Shih, Richard Chou",
+  "license": "",
+  "dependencies": {
+    "assert": "latest",
+    "async": "latest",
+    "logule": "^2.0.1",
+    "mocha": "latest",
+    "nats": "^0.4.4",
+    "node-uuid": "latest",
+    "request": "^2.40.0",
+    "should": "latest",
+    "ws": "0.7.2"
+  }
+}
