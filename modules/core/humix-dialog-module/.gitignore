@@ -1,8 +1,0 @@
-node_modules
-deps
-build
-lib/HumixSpeech.node
-voice/text/*.wav
-.cproject
-.project
-.settings
