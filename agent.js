@@ -125,9 +125,9 @@ function init(thinkUrl, senseId, options) {
     if (thinkUrl) {
         if (typeof thinkUrl === 'string') {
             if (thinkUrl.slice(-1) !== '/') {
-                url = thinkUrl+'/node-red/comms_sense';
+                url = thinkUrl+'/node-red/comms';
             } else {
-                url = thinkUrl+'node-red/comms_sense';
+                url = thinkUrl+'node-red/comms';
             }
         } else {
             throw new Error('Invalid Url format');
