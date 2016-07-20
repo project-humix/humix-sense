@@ -96,8 +96,24 @@ function connect(id) {
     }
 
     socket.on('open', function () {
-        log.info('Connected to Think successfully.');
+        log.info('Connected SenseId %s to Think successfully.', config.id);
         currentState = 'CONNECTED';
+
+        var initData = {
+            senseId : config.id,
+            data: {
+                eventType: 'humix-think',
+                eventName: 'sense.status',
+                message: 'connected'
+            }
+        }
+
+        socket.send(JSON.stringify(initData), function(error) {
+            if (error) {
+                log.error('Error occurred while publising senseid : %s, ERRMSG: %s', config.id, error);
+            }
+        });        
+
     });
 
     socket.on('message', commandHandler);

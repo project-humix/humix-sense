@@ -4,10 +4,18 @@ var agent = require('./agent'),
     path = require("path"),
     respawn = require('respawn'),
     log = require('logule').init(module, 'Humix-Sense'),
+    async = require('async'),
     config = require('./config')
 
 
 var modules = {};
+var statusCheckHandle;
+
+
+/* Constants */
+
+var STATUS_CHECK_INTERVAL = 3000;
+var STATUS_CHECK_TIMEOUT  = 5000;
 
 process.on('SIGTERM', function() {
     if (agent.getState() === 'RUNNING') {
@@ -79,6 +87,56 @@ function humixSenseInit(){
         });
  
     });
+
+
+    statusCheckHandle = startStatusCheck();
+}
+
+function startStatusCheck() { 
+
+    return setInterval(function () { 
+
+        var moduleStatus = [];
+
+        var myPromise = function (ms, module, callback) {
+            return new Promise(function(resolve, reject) {         
+                callback(resolve, reject);
+                setTimeout(function() {
+                    reject('Status Check promise timed out after ' + ms + ' ms');
+                }, ms);
+            });
+        }
+
+
+        async.eachSeries(Object.keys(modules), function (module, cb) {
+
+            log.info('checking status of ' + module);            
+
+            myPromise(STATUS_CHECK_TIMEOUT, module, function (resolve, reject) { 
+                var t = 'humix.sense.mgmt.' + module + ".ping";           
+                nats.request(t, null, { 'max': 1 }, function (res) { 
+                    resolve('success');
+                    
+                })
+
+            }).then(function (result) { 
+                   log.info('connection with module ' + module + " succeed");                    
+                   moduleStatus.push({ moduleId: module, status: 'connected' });
+                   cb(null);
+            }).catch(function () { 
+                    log.info('connection with module ' + module + " failed");    
+                    moduleStatus.push({ moduleId: module, status: 'disconnected' });
+                    cb(null);
+            })
+
+        }, function (err) {
+            log.info('check status done. Status:' + JSON.stringify(moduleStatus));
+            agent.publish('humix-think', 'module.status', moduleStatus);
+        }); 
+
+    },STATUS_CHECK_INTERVAL);
+
+
 }
 
 agent.events.on('module.command', function(data) {
@@ -104,16 +162,6 @@ agent.events.on('module.command', function(data) {
 
 });
 
-
-// handle module events
-/*
-nats.subscribe('humix.sense.*.event.*', function(data){
-
-    log.info('receive module event:'+JSON.stringify(data));
-
-})
-*/
-
 // handle module registration
 nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
     log.info("Receive registration :"+ request);
@@ -121,7 +169,7 @@ nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
     var requestModule = JSON.parse(request);
 
     if(modules.hasOwnProperty(requestModule.moduleName)){
-        console.log('Module [' + requestModule.moduleName + '] already register. Skip');
+        log.info('Module [' + requestModule.moduleName + '] already register. Skip');
         nats.publish(replyto,'module already registered');
         return;
     }
@@ -137,12 +185,12 @@ nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
         var module = requestModule.moduleName;
         var topic = eventPrefix + "." + event;
 
-        log.info("subscribing topic:"+ topic);
+        log.debug("subscribing topic:"+ topic);
 
         (function(topic,module,event){
 
             nats.subscribe(topic, function(data){
-                log.info('about to publish topic:'+topic+", data:"+data);
+                log.debug('about to publish topic:'+topic+", data:"+data);
                 agent.publish(module, event, data);
             });
         })(topic,module,event);
@@ -153,35 +201,8 @@ nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
 
     agent.publish('humix-think', 'registerModule', requestModule);
 
-    console.log('current modules:'+JSON.stringify(modules));
+    log.debug('current modules:'+JSON.stringify(modules));
     nats.publish(replyto,'module registration succeed');
     
 });
 
-
-// for testing
-/*
-setInterval(function() {
-    if (agent.getState() === 'CONNECTED') {
-        agent.publish('temp', 'currentTemp', 25);
-    }
-}, 3000);
-*/
-
-/*
-setTimeout(function() {
-    if (agent.getState() === 'CONNECTED') {
-        console.log('connected....');
-        agent.publish('humix-think', 'registerModule', {
-            moduleName: 'neopixel',
-            commands: ['feel', 'mode', 'color'],
-            events: ['event1']
-        });
-        agent.publish('humix-think', 'registerModule', {
-            moduleName: 'tts',
-            commands: ['command1', 'command2'],
-            events: ['event1', 'event2']
-        });
-    }
-}, 2000);
-*/
