@@ -12,7 +12,7 @@
   "dependencies": {
     "assert": "latest",
     "async": "latest",
-    "logule": "^2.0.1",
+    "bunyan": "latest",
     "mocha": "latest",
     "nats": "^0.4.4",
     "node-uuid": "latest",
