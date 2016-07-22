@@ -1,9 +1,0 @@
-{"name":"Sense","hostname":"JimmyMBPR.local","pid":40998,"level":30,"msg":"Init Humix Sense","time":"2016-07-22T15:16:50.037Z","v":0}
-{"name":"Sense","hostname":"JimmyMBPR.local","pid":40998,"level":50,"msg":"Error: Error: invalid url","time":"2016-07-22T15:16:50.043Z","v":0}
-{"name":"Sense","hostname":"JimmyMBPR.local","pid":40998,"level":50,"msg":"Failed to read core modules. Error:Error: ENOENT: no such file or directory, scandir './modules/core/'","time":"2016-07-22T15:16:50.045Z","v":0}
-{"name":"Sense","hostname":"JimmyMBPR.local","pid":40998,"component":"Agent","level":50,"msg":"Connection to Think is broken, message: ","time":"2016-07-22T15:16:53.043Z","v":0}
-{"name":"Sense","hostname":"JimmyMBPR.local","pid":40998,"component":"Agent","level":50,"msg":"Connection to Think is broken, message: ","time":"2016-07-22T15:16:56.051Z","v":0}
-{"name":"Sense","hostname":"JimmyMBPR.local","pid":40998,"component":"Agent","level":50,"msg":"Connection to Think is broken, message: ","time":"2016-07-22T15:16:59.057Z","v":0}
-{"name":"Sense","hostname":"JimmyMBPR.local","pid":41030,"level":30,"msg":"Init Humix Sense","time":"2016-07-22T15:17:24.369Z","v":0}
-{"name":"Sense","hostname":"JimmyMBPR.local","pid":41030,"level":50,"msg":"Failed to read core modules. Error:Error: ENOENT: no such file or directory, scandir './modules/core/'","time":"2016-07-22T15:17:24.381Z","v":0}
-{"name":"Sense","hostname":"JimmyMBPR.local","pid":41030,"component":"Agent","level":30,"msg":"Connected SenseId jimmy_sense to Think successfully.","time":"2016-07-22T15:17:24.389Z","v":0}
