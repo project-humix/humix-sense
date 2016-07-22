@@ -5,9 +5,18 @@ var agent = require('./agent'),
     respawn = require('respawn'),
     bunyan = require("bunyan"),
     log = bunyan.createLogger({name: 'Sense'}),
+    async = require('async'),
     config = require('./config');
 
 var modules = {};
+var statusCheckHandle;
+
+
+/* Constants */
+
+var STATUS_CHECK_INTERVAL = 3000;
+var STATUS_CHECK_TIMEOUT  = 5000;
+
 
 process.on('SIGTERM', function() {
     if (agent.getState() === 'RUNNING') {
@@ -103,6 +112,54 @@ function humixSenseInit(){
         });
 
     });
+    statusCheckHandle = startStatusCheck();
+}
+
+
+function startStatusCheck() {
+
+    return setInterval(function () {
+
+        var moduleStatus = [];
+
+        var myPromise = function (ms, module, callback) {
+            return new Promise(function(resolve, reject) {
+                callback(resolve, reject);
+                setTimeout(function() {
+                    reject('Status Check promise timed out after ' + ms + ' ms');
+                }, ms);
+            });
+        }
+
+
+        async.eachSeries(Object.keys(modules), function (module, cb) {
+
+            log.info('checking status of ' + module);
+
+            myPromise(STATUS_CHECK_TIMEOUT, module, function (resolve, reject) {
+                var t = 'humix.sense.mgmt.' + module + ".ping";
+                nats.request(t, null, { 'max': 1 }, function (res) {
+                    resolve('success');
+
+                })
+
+            }).then(function (result) {
+                   log.info('connection with module ' + module + " succeed");
+                   moduleStatus.push({ moduleId: module, status: 'connected' });
+                   cb(null);
+            }).catch(function () {
+                    log.info('connection with module ' + module + " failed");
+                    moduleStatus.push({ moduleId: module, status: 'disconnected' });
+                    cb(null);
+            })
+
+        }, function (err) {
+            agent.publish('humix-think', 'module.status', moduleStatus);
+        });
+
+    },STATUS_CHECK_INTERVAL);
+
+
 }
 
 agent.events.on('module.command', function(data) {
@@ -115,24 +172,27 @@ agent.events.on('module.command', function(data) {
 
     log.info('topic: '+topic + ', data: '+JSON.stringify(data.commandData));
 
-    if (modules.hasOwnProperty(module) &&  modules[module].commands.indexOf(command) != -1 ) {
-        nats.publish(topic,JSON.stringify(data.commandData));
-        log.info('publish command');
-    } else {
+    if(modules.hasOwnProperty(module) &&  modules[module].commands.indexOf(command) != -1 ){
+
+        if (data.syncCmdId) {
+
+            // TODO: handle timeout here
+            data.commandData.syncCmdId = data.syncCmdId;
+            nats.request(topic, JSON.stringify(data.commandData), { 'max': 1 }, function (res) {
+                agent.publish_syncResult(data.syncCmdId, res);
+
+            })
+        } else {
+            nats.publish(topic, JSON.stringify(data.commandData));
+        }
+
+        log.debug('publish command');
+
+    }else{
+
         log.info('skip command');
     }
-
 });
-
-
-// handle module events
-/*
-nats.subscribe('humix.sense.*.event.*', function(data){
-
-    log.info('receive module event:'+JSON.stringify(data));
-
-})
-*/
 
 // handle module registration
 nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
@@ -140,7 +200,7 @@ nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
 
     var requestModule = JSON.parse(request);
 
-    if (modules.hasOwnProperty(requestModule.moduleName)) {
+    if(modules.hasOwnProperty(requestModule.moduleName)){
         log.info('Module [' + requestModule.moduleName + '] already register. Skip');
         nats.publish(replyto,'module already registered');
         return;
@@ -148,20 +208,21 @@ nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
 
     modules[requestModule.moduleName] = requestModule;
 
+
     var eventPrefix = 'humix.sense.'+requestModule.moduleName+".event";
 
-    for ( var i in requestModule.events ) {
+    for ( var i in requestModule.events){
 
         var event = requestModule.events[i];
         var module = requestModule.moduleName;
         var topic = eventPrefix + "." + event;
 
-        log.info("subscribing topic: "+ topic);
+        log.debug("subscribing topic:"+ topic);
 
         (function(topic,module,event){
 
             nats.subscribe(topic, function(data){
-                log.info('about to publish topic: '+topic+', data: %j', data);
+                log.debug('about to publish topic:'+topic+", data:"+data);
                 agent.publish(module, event, data);
             });
         })(topic,module,event);
@@ -172,36 +233,7 @@ nats.subscribe('humix.sense.mgmt.register', function(request, replyto){
 
     agent.publish('humix-think', 'registerModule', requestModule);
 
-    //console.log('current modules:'+JSON.stringify(modules));
-    log.info('current modules: %j', modules);
+    log.debug('current modules:'+JSON.stringify(modules));
     nats.publish(replyto,'module registration succeed');
 
 });
-
-//pid.removeOnExit();
-// for testing
-/*
-setInterval(function() {
-    if (agent.getState() === 'CONNECTED') {
-        agent.publish('temp', 'currentTemp', 25);
-    }
-}, 3000);
-*/
-
-/*
-setTimeout(function() {
-    if (agent.getState() === 'CONNECTED') {
-        console.log('connected....');
-        agent.publish('humix-think', 'registerModule', {
-            moduleName: 'neopixel',
-            commands: ['feel', 'mode', 'color'],
-            events: ['event1']
-        });
-        agent.publish('humix-think', 'registerModule', {
-            moduleName: 'tts',
-            commands: ['command1', 'command2'],
-            events: ['event1', 'event2']
-        });
-    }
-}, 2000);
-*/
