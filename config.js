@@ -2,5 +2,6 @@
 
 module.exports = {
     thinkURL : 'your_think_url',
-    senseId  : 'your_sense_id'
+    senseId  : 'your_sense_id',
+    log : { file: './sense.log', level: 'debug' }
 }
