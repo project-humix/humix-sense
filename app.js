@@ -130,7 +130,6 @@ function startStatusCheck() {
             })
 
         }, function (err) {
-            log.info('check status done. Status:' + JSON.stringify(moduleStatus));
             agent.publish('humix-think', 'module.status', moduleStatus);
         }); 
 
@@ -152,8 +151,19 @@ agent.events.on('module.command', function(data) {
 
     if(modules.hasOwnProperty(module) &&  modules[module].commands.indexOf(command) != -1 ){
 
-        nats.publish(topic,JSON.stringify(data.commandData));
-        log.info('publish command');
+        if (data.syncCmdId) {
+
+            // TODO: handle timeout here
+            data.commandData.syncCmdId = data.syncCmdId;
+            nats.request(topic, JSON.stringify(data.commandData), { 'max': 1 }, function (res) {                 
+                agent.publish_syncResult(data.syncCmdId, res);                
+
+            })
+        } else {
+            nats.publish(topic, JSON.stringify(data.commandData));
+        }
+        
+        log.debug('publish command');
 
     }else{
 

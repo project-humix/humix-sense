@@ -51,6 +51,23 @@ function registerModulesToThink(moduleList) {
 
 }
 
+function publish_syncResult(syncCmdId, message) { 
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        var event = {
+            senseId: config.id,
+            syncCmdId: syncCmdId,
+            data: message
+        };
+        socket.send(JSON.stringify(event), function(error) {
+            if (error) {
+                log.error('Error occurred while publising event: %s, ERRMSG: %s', JSON.stringify(event), error);
+            }
+        });
+    } else {
+        log.error('Connection to Think is broken, message: '+message);
+    }
+
+}
 function publish(module, event, message) {
     if (socket && socket.readyState === WebSocket.OPEN) {
         var event = {
@@ -185,5 +202,6 @@ module.exports = {
     stop: stop,
     publish: publish,
     events: emitter,
+    publish_syncResult: publish_syncResult,
     getState: function () { return currentState; }
 };
