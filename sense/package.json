@@ -1,14 +1,14 @@
 {
-  "name": "gw-agent",
-  "version": "0.0.1",
-  "description": "",
+  "name": "humix-sense",
+  "version": "1.0",
+  "description": "Humix Sense, the little brain of Humix framework",
   "main": "app.js",
   "scripts": {
     "test": "mocha",
     "start": "./start.sh"
   },
   "author": "Daniel Shih, Richard Chou",
-  "license": "",
+  "license": "Apache 2.0",
   "dependencies": {
     "assert": "latest",
     "async": "latest",
