@@ -1,6 +1,6 @@
 {
   "name": "humix-sense",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "Humix Sense, the little brain of Humix framework",
   "main": "app.js",
   "scripts": {
