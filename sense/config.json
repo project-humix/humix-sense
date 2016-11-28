@@ -1,0 +1,9 @@
+{
+  "init": true,
+  "thinkURL": "https://todo-bot.mybluemix.net",
+  "senseId": "alpha",
+  "log": {
+    "file": "./sense.log",
+    "level": "debug"
+  }
+}
