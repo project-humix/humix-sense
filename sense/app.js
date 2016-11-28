@@ -3,8 +3,7 @@ var agent = require('./agent'),
     fs = require('fs'),
     path = require("path"),
     respawn = require('respawn'),
-    bunyan = require("bunyan"),
-    log = bunyan.createLogger({name: 'Sense'}),
+    log = require('humix-logger').createLogger('Humix-Sense', {filename:'humix-sense.log'}),
     async = require('async'),
     config = require('./config');
 

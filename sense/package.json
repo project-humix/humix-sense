@@ -13,6 +13,7 @@
     "assert": "latest",
     "async": "latest",
     "bunyan": "latest",
+    "humix-logger": "^1.0.4",
     "mocha": "latest",
     "nats": "^0.4.4",
     "node-uuid": "latest",
