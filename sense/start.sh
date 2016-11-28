@@ -2,5 +2,5 @@
 killall gnatsd-arm
 killall node
 
-../bin/gnatsd-arm -V &
+../bin/gnatsd-darwin -V &
 node app.js

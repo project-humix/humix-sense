@@ -1,0 +1,262 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Humix Sense</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/css/ie8.css" /><![endif]-->
+
+		<script src="/js/angular.min.js"></script>
+
+		<script>
+			var humix = angular.module('humix', []);
+		</script>
+
+		<script>
+			humix.controller('humixCtrl', function($scope, $rootScope, $http) {
+				
+				$scope.thinkURL = '';
+				$scope.senseId = '';
+
+				$scope.initialize = function() {
+
+					$http.get('/config')
+					.success(function(response, status) {
+						$scope.config = response;
+					})
+					.error(function(response, status) {
+
+					})
+
+				}
+
+				$scope.configure = function() {
+					$scope.error_message = '';
+					if($scope.thinkURL == ''){
+						$scope.error_message = 'Please enter Humix Think URL';
+						return;
+					}
+					if($scope.senseId == ''){
+						$scope.error_message = 'Please enter Humix Sense ID';
+						return;
+					}
+					
+					$http.get('/sense?thinkURL=' + $scope.thinkURL + "&senseId=" + $scope.senseId)
+					.success(function(response, status) {
+						window.alert('Successfully Update Configuration');
+						console.log(response);
+					})
+					.error(function(response, status) {
+						console.log(response);
+					})
+
+				}
+			})
+		</script>
+
+	</head>
+	<body ng-app="humix" ng-controller="humixCtrl" ng-cloak ng-init="initialize()">
+
+		<!-- Sidebar -->
+			<section id="sidebar">
+				<h2><img src="/images/logo.png">   Humix Sense</h2>
+				<div class="inner">
+					<nav>
+						<ul>
+							<li><a href="#welcome">Welcome</a></li>
+							<li><a href="#configure">Configure</a></li>
+							<li><a href="#status">Status</a></li>
+						</ul>
+					</nav>
+				</div>
+			</section>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Welcome -->
+					<section id="welcome" class="wrapper style1 fullscreen fade-up">
+						<div class="inner">
+							<h1>Welcome to Humix Sense</h1>
+							<p>You are almost there!<br />
+							Click to configure your Humix Sense for the first time.</p>
+							<ul class="actions">
+								<li><a href="#configure" class="button scrolly special">Configure</a></li>
+							</ul>
+						</div>
+					</section>
+
+				<!-- Configure -->
+					<section id="configure" class="wrapper style2 spotlights">
+						<div class="inner">
+							<h2>Configure your Humix Sense for the first time</h2>
+							<hr />
+							<section>
+								<form>
+									<h2>Humix Sense Configuration</h2>
+									<div class="field half first">
+										<label for="thinkURL">Your Humix Think URL</label>
+										<input type="text" id="thinkURL" ng-model="thinkURL"/>
+									</div>
+									<div class="field half">
+										<label for="senseId">Your Humix Sense ID</label>
+										<input type="text" id="senseId" ng-model="senseId"/>
+									</div>
+									<h2>STT & TTS Credentials</h2>
+									<div class="field">
+										<label for="language">Language</label>
+										<div class="select-wrapper">
+											<select id="language" ng-model="language">
+												<option value="">- Select -</option>
+												<option value="en">English</option>
+												<option value="cht">Chinese Traditional</option>
+												<option value="chs">Chinese Simplified</option>
+											</select>
+										</div>
+									</div>
+
+									<div class="field half first">
+										<label for="stt">STT Engine</label>
+										<div class="select-wrapper">
+											<select id="stt" ng-model="stt">
+												<option value="">- Select -</option>
+												<option value="watson">Watson</option>
+												<option value="google">Google</option>
+											</select>
+										</div>
+									</div>
+									<div class="field half">
+										<label for="tts">TTS Engine</label>
+										<div class="select-wrapper">
+											<select id="tts" ng-model="tts">
+												<option value="">- Select -</option>
+												<option value="watson">Watson</option>
+												<option value="itri">IRTI</option>
+												<option value="iflytek">iflytek</option>
+											</select>
+										</div>
+									</div>
+
+									<!-- STT Watson -->
+									<h2 ng-show="stt == 'watson'">STT Engine: Watson</h2>
+									<div class="field half first" ng-show="stt == 'watson'">
+										<label for="stt_watson_username">username</label>
+										<input type="text" id="stt_watson_username" ng-model="stt_watson_username"/>
+									</div>
+									<div class="field half" ng-show="stt == 'watson'">
+										<label for="stt_watson_password">password</label>
+										<input type="text" id="stt_watson_password" ng-model="stt_watson_password"/>
+									</div>
+
+									<!-- STT Google -->
+									<h2 ng-show="stt == 'google'">STT Engine: Google</h2>
+									<div class="field half first" ng-show="stt == 'google'">
+										<label for="stt_google_username">username</label>
+										<input type="text" id="stt_google_username" ng-model="stt_google_username"/>
+									</div>
+									<div class="field half" ng-show="stt == 'google'">
+										<label for="stt_google_password">App ID</label>
+										<input type="text" id="stt_google_password" ng-model="stt_google_password"/>
+									</div>
+
+									<!-- TTS Watson -->
+									<h2 ng-show="tts == 'watson'">TTS Engine: Watson</h2>
+									<div class="field half first" ng-show="tts == 'watson'">
+										<label for="tts_watson_username">username</label>
+										<input type="text" id="tts_watson_username" ng-model="tts_watson_username"/>
+									</div>
+									<div class="field half" ng-show="tts == 'watson'">
+										<label for="tts_watson_password">password</label>
+										<input type="text" id="tts_watson_password" ng-model="tts_watson_password"/>
+									</div>
+
+									<!-- TTS iflytek -->
+									<h2 ng-show="tts == 'iflytek'">TTS Engine: iflytek</h2>
+									<div class="field" ng-show="tts == 'iflytek'">
+										<label for="tts_iflytek_app_id">App ID</label>
+										<input type="text" id="tts_iflytek_app_id" ng-model="tts_iflytek_app_id"/>
+									</div>
+
+									<!-- TTS IRTI -->
+									<h2 ng-show="tts == 'itri'">TTS Engine: IRTI</h2>
+									<div class="field half first" ng-show="tts == 'itri'">
+										<label for="tts_itri_username">username</label>
+										<input type="text" id="tts_itri_username" ng-model="tts_itri_username"/>
+									</div>
+									<div class="field half" ng-show="tts == 'itri'">
+										<label for="tts_itri_password">password</label>
+										<input type="text" id="tts_itri_password" ng-model="tts_itri_password"/>
+									</div>
+									<div class="field" ng-show="tts == 'itri'">
+										<label for="tts_itri_speaker">Speaker</label>
+										<input type="text" id="tts_itri_speaker" ng-model="tts_itri_speaker"/>
+									</div>
+
+									<ul class="actions">
+										<li><input type="submit" ng-click="configure()" value="Save and Start Humix Sense" class="special"></li>
+										<li><h3>{{ error_message }}</h3></li>
+									</ul>
+								</form>
+							</section>
+						</div>
+					</section>
+
+				<!-- Status -->
+					<section id="status" class="wrapper style3 fade-up">
+						<div class="inner">
+							<h2>Status</h2>
+							<p>You Humix Sense has successfully connected to Humix Think</p>
+							<p>Think URL: <strong ng-bind="config.thinkURL">/</strong></p>
+							<p>Sense ID: <strong ng-bind="config.senseId"></strong></p>
+							<hr />
+							<h2>Modules</h2>
+							<div class="features">
+								<section>
+									<span class="icon major fa-cubes"></span>
+									<h3>Humix-Cloudant-Service</h3>
+									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+								</section>
+								<section>
+									<span class="icon major fa-cubes"></span>
+									<h3>Humix-Conversation-Service</h3>
+									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+								</section>
+								<section>
+									<span class="icon major fa-cubes"></span>
+									<h3>Humix-Speech-Service</h3>
+									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+								</section>
+								<section>
+									<span class="icon major fa-cubes"></span>
+									<h3>Humix-TTS-Service</h3>
+									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+								</section>
+							</div>
+						</div>
+					</section>				
+
+			</div>
+
+		<!-- Footer -->
+			<footer id="footer" class="wrapper style1-alt">
+				<div class="inner">
+					<ul class="menu">
+						<li>&copy; Humix | An open-source robot framework.</li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="/js/jquery.min.js"></script>
+			<script src="/js/jquery.scrollex.min.js"></script>
+			<script src="/js/jquery.scrolly.min.js"></script>
+			<script src="/js/skel.min.js"></script>
+			<script src="/js/util.js"></script>
+			<!--[if lte IE 8]><script src="/js/ie/respond.min.js"></script><![endif]-->
+			<script src="/js/main.js"></script>
+
+	</body>
+</html>
