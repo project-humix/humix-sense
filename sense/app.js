@@ -48,8 +48,9 @@ function humixSenseInit(){
 
     // starting core modules
 
-    var coreModulePath = './modules/core/';
-
+    var coreModulePath = path.join(__dirname,'modules/core/');
+    
+    if(fs.existsSync(coreModulePath)){
     fs.readdir(coreModulePath,function(err, coreModules){
 
         if(err){
@@ -109,8 +110,9 @@ function humixSenseInit(){
             });
             p.start();
         });
-
+     
     });
+    }
     statusCheckHandle = startStatusCheck();
 }
 
