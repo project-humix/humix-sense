@@ -43,8 +43,8 @@ function normalizePort(val) {
 		// port number
 		return port;
 	}
-
 	return false;
+
 }
 
 /* Event listener for HTTP server "error" event */
@@ -80,7 +80,7 @@ function onListening() {
 	var bind = typeof addr === 'string'
 		? 'pipe ' + addr
 		: 'port ' + addr.port;
-	debug('Listening on ' + bind);
+	log.info('Listening on ' + bind);
 }
 
 console.log('##### Web Server Started #####');
