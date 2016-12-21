@@ -12,14 +12,20 @@
   "dependencies": {
     "assert": "latest",
     "async": "latest",
+    "body-parser": "^1.15.2",
     "bunyan": "latest",
+    "cookie-parser": "^1.4.3",
+    "ejs": "^2.5.2",
+    "express": "^4.14.0",
     "humix-logger": "^1.0.4",
     "mocha": "latest",
+    "morgan": "^1.7.0",
     "nats": "^0.4.4",
     "node-uuid": "latest",
     "path": "^0.12.7",
     "request": "^2.40.0",
     "respawn": "^2.3.0",
+    "serve-favicon": "^2.3.2",
     "should": "latest",
     "ws": "0.7.2"
   }
