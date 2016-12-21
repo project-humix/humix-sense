@@ -9,7 +9,6 @@ var agent = require('./agent'),
     config = require('./config');
 
 var web = require('./web');
-var debug = require('debug')('humix-sense-web:server');
 var http = require('http');
 var fs = require('fs');
 var sense = require('./sense');
@@ -61,11 +60,11 @@ function onError(error) {
 	// handle specific listen errors with friendly messages
 	switch (error.code) {
 		case 'EACCES':
-			console.error(bind + ' requires elevated privileges');
+			log.error(bind + ' requires elevated privileges. Abort');
 			process.exit(1);
 			break;
 		case 'EADDRINUSE':
-			console.error(bind + ' is already in use');
+			log.error(bind + ' is already in use. Abort');
 			process.exit(1);
 			break;
 		default:
@@ -83,7 +82,7 @@ function onListening() {
 	log.info('Listening on ' + bind);
 }
 
-console.log('##### Web Server Started #####');
+log.info('##### Web Server Started #####');
 
 // determine whether config is already set or not
 var init = JSON.parse(fs.readFileSync('config.json', 'utf8')).init;

@@ -3,19 +3,20 @@ var agent = require('./agent'),
 	fs = require('fs'),
 	path = require("path"),
 	respawn = require('respawn'),
-	bunyan = require("bunyan"),
-	log = bunyan.createLogger({name: 'Sense'}),
 	async = require('async');
 
 var config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 
 var modules = {};
 var statusCheckHandle;
+var log;
 
 var STATUS_CHECK_INTERVAL = 3000;
 var STATUS_CHECK_TIMEOUT  = 5000;
 
-function humixSenseStart () {
+function humixSenseStart (log) {
+
+	log = log;
 
 	process.on('SIGTERM', function() {
 		if (agent.getState() === 'RUNNING') {
