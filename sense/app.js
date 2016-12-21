@@ -1,4 +1,12 @@
 /* Module dependencies */
+var agent = require('./agent'),
+    nats = require('nats').connect(),
+    fs = require('fs'),
+    path = require("path"),
+    respawn = require('respawn'),
+    log = require('humix-logger').createLogger('Humix-Sense', {filename:'humix-sense.log'}),
+    async = require('async'),
+    config = require('./config');
 
 var web = require('./web');
 var debug = require('debug')('humix-sense-web:server');
