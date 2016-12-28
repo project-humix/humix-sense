@@ -29,4 +29,4 @@ killall $NATSD
 
 
 $NATSD &
-node app.js
+node index.js

@@ -2,15 +2,14 @@
 /**
  * Main function of Agent
  *
- * Usage: ZONE=[zoneId/agentId] nodejs app.js
+ * Usage: nodejs index.js
  *
  * Author: Wei-Ting Chou <wtchou1209@gmail.com>
  *
  */
 'use strict';
 
-var bunyan = require("bunyan"),
-    log = null,
+var log = null,
     EventEmitter = require('events').EventEmitter,
     emitter = new EventEmitter,
     WebSocket = require('ws');
@@ -178,7 +177,7 @@ function init(thinkUrl, senseId, options) {
     config.url = url;
     config.id = senseId || undefined;
     config.options = options || {};
-    log = options.logger.child({component:'Agent'});
+    log = options.logger;
 }
 
 function start() {
