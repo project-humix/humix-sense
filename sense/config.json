@@ -1,36 +1,36 @@
 {
-  "init": false,
-  "thinkURL": "3234234",
-  "senseId": "fsdfsdf",
+  "init": true,
+  "thinkURL": "thinkURL",
+  "senseId": "senseId",
   "log": {
     "file": "./sense.log",
     "level": "debug"
   },
   "dialog": {
-    "lang": "en",
-    "sttEngine": "watson",
-    "ttsEngine": "watson",
+    "lang": "lang",
+    "sttEngine": "sttEngine",
+    "ttsEngine": "ttsEngine",
     "stt": {
       "watson": {
-        "username": "<your_username>",
-        "passwd": "<your_password>"
+        "username": "username",
+        "passwd": "passwd"
       },
       "google": {
-        "username": "xxxxx",
-        "passwd": "<replace as your appid>"
+        "username": "username",
+        "passwd": "passwd"
       }
     },
     "tts": {
       "watson": {
-        "username": "<your_username>",
-        "passwd": "<your_password>"
+        "username": "username",
+        "passwd": "passwd"
       },
       "iflytek": {
-        "appid": "<app_id>"
+        "appid": "appid"
       },
       "itri": {
-        "username": "<your_username>",
-        "passwd": "<your_password>",
+        "username": "username",
+        "passwd": "passwd",
         "speaker": "Bruce"
       }
     }
