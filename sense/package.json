@@ -2,25 +2,48 @@
   "name": "humix-sense",
   "version": "1.0.0",
   "description": "Humix Sense, the little brain of Humix framework",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "test": "mocha",
     "start": "./start.sh"
   },
-  "author": "Daniel Shih, Richard Chou",
-  "license": "Apache 2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/project-humix/humix-sense.git"
+  },
+  "contributors": [
+    {
+      "name": "Jeffrey Liu",
+      "email": "jeffffrey@gmail.com"
+    },
+    {
+      "name": "Richard Chou",
+      "email": "richchou@gmail.com"
+    },
+    {
+      "name": "Norman Kung",
+      "email": "as93717913@hotmail.com"
+    },
+    {
+      "name": "Prinz Hung",
+      "email": "prinzh@gmail.com"
+    }
+  ],
+  "license": "Apache-2.0",
   "dependencies": {
-    "assert": "latest",
-    "async": "latest",
-    "bunyan": "latest",
+    "async": "^2.1.4",
     "humix-logger": "^1.0.4",
-    "mocha": "latest",
-    "nats": "^0.4.4",
-    "node-uuid": "latest",
-    "path": "^0.12.7",
+    "nats": "^0.6.4",
     "request": "^2.40.0",
     "respawn": "^2.3.0",
-    "should": "latest",
-    "ws": "0.7.2"
+    "ws": "^1.1.1"
+  },
+   "devDependencies": {
+    "chai": "^3.3.0",
+    "mocha": "^3.2.0",
+    "should": "^11.1.2"
+  },
+  "engines": {
+    "node": ">=4.2"
   }
 }

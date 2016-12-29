@@ -66,11 +66,7 @@ function humixSenseInit(){
 
     }
 
-
-
-
-
-    log.info("Init Humix Sense");
+    log.info("Init Humix Sense. Using Think URL:"+ thinkURL);
 
     // starting core modules
 
