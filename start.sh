@@ -18,7 +18,7 @@ else
     ARCH=amd64
 fi
 
-BIN_PATH=../bin/gnatsd
+BIN_PATH=bin/gnatsd
 VER=0.94
 NATSD=$BIN_PATH-$VER-$OSTYPE-$ARCH
 
