@@ -49,21 +49,106 @@ app.get('/sense', function(req, res){
 
 	var config = require('./config.json');
 
-	config.init = false;
 	config.thinkURL = req.query.thinkURL;
 	config.senseId = req.query.senseId;
+
+	config.dialog.lang = req.query.language;
+	config.dialog.sttEngine = req.query.stt;
+	config.dialog.ttsEngine = req.query.tts;
+
+	if (req.query.stt == 'watson'){
+
+		config.dialog.stt.watson.username = req.query.stt_username;
+		config.dialog.stt.watson.passwd = req.query.stt_password;
+
+	} else if(req.query.stt == 'google'){
+
+		config.dialog.stt.google.username = req.query.stt_username;
+		config.dialog.stt.google.passwd = req.query.stt_password;
+
+	}
+	
+	if (req.query.tts == 'watson'){
+
+		config.dialog.tts.watson.username = req.query.tts_username;
+		config.dialog.tts.watson.passwd = req.query.tts_password;
+
+	} else if(req.query.tts == 'itri'){
+
+		config.dialog.tts.itri.username = req.query.tts_username;
+		config.dialog.tts.itri.passwd = req.query.tts_password;
+
+	} else if(req.query.tts == 'iflytek'){
+
+		config.dialog.tts.iflytek.appid = req.query.tts_username;
+
+	}
 
 	fs.writeFile('./config.json', JSON.stringify(config, null, 2), function (err) {
 		if (err) return console.log(err);
 		console.log("update config: " + JSON.stringify(config));
 	});
 
+	fs.writeFile('./.init', 'Humix Sense has been initialized.', function (err) {
+		if (err) return console.log(err);
+		console.log("write .init file");
+	});
 	
 	sense.humixSenseStart();
 
 	res.json({ result: 'ok' });
 
 });
+
+// config humix-dialog-module
+// app.get('/humix-dialog-module', function(req, res){
+
+// 	var config = require('./config.json');
+
+// 	config.dialog.lang = req.query.language;
+// 	config.dialog.sttEngine = req.query.stt;
+// 	config.dialog.ttsEngine = req.query.tts;
+
+// 	if (req.query.stt == 'watson'){
+
+// 		config.dialog.stt.watson.username = req.query.stt_username;
+// 		config.dialog.stt.watson.passwd = req.query.stt_password;
+
+// 	} else if(req.query.stt == 'google'){
+
+// 		config.dialog.stt.google.username = req.query.stt_username;
+// 		config.dialog.stt.google.passwd = req.query.stt_password;
+
+// 	}
+
+// 	if (req.query.tts == 'watson'){
+
+// 		config.dialog.tts.watson.username = req.query.tts_username;
+// 		config.dialog.tts.watson.passwd = req.query.tts_password;
+
+// 	} else if(req.query.tts == 'itri'){
+
+// 		config.dialog.tts.itri.username = req.query.tts_username;
+// 		config.dialog.tts.itri.passwd = req.query.tts_password;
+
+// 	} else if(req.query.tts == 'iflytek'){
+
+// 		config.dialog.tts.iflytek.appid = req.query.tts_username;
+
+// 	}
+
+
+// 	fs.writeFile('./config.json', JSON.stringify(config, null, 2), function (err) {
+// 		if (err) return console.log(err);
+// 		console.log("update humix-dialog-module config: " + JSON.stringify(config));
+// 	});
+	
+// 	sense.humixSenseStart();
+
+// 	res.json({ result: 'ok' });
+
+// });
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -34,6 +34,7 @@
 				}
 
 				$scope.configure = function() {
+
 					$scope.error_message = '';
 					if($scope.thinkURL == ''){
 						$scope.error_message = 'Please enter Humix Think URL';
@@ -43,8 +44,46 @@
 						$scope.error_message = 'Please enter Humix Sense ID';
 						return;
 					}
-					
-					$http.get('/sense?thinkURL=' + $scope.thinkURL + "&senseId=" + $scope.senseId)
+
+					if ($scope.language != undefined){
+
+						if($scope.stt == '' || $scope.stt == undefined){
+							$scope.error_message = 'Please select STT engine';
+							return;
+						}
+						if($scope.tts == '' || $scope.tts == undefined){
+							$scope.error_message = 'Please select TTS engine';
+							return;
+						}
+
+					}
+
+					// STT config
+					if ($scope.stt == 'watson'){
+						$scope.stt_username = $scope.stt_watson_username;
+						$scope.stt_password = $scope.stt_watson_password;
+					} else if($scope.stt == 'google'){
+						$scope.stt_username = $scope.stt_google_username;
+						$scope.stt_password = $scope.stt_google_password;
+					}
+
+					// TTS config
+					if ($scope.tts == 'watson'){
+						$scope.tts_username = $scope.tts_watson_username;
+						$scope.tts_password = $scope.tts_watson_password;
+					} else if($scope.tts == 'itri'){
+						$scope.tts_username = $scope.tts_itri_username;
+						$scope.tts_password = $scope.tts_itri_password;
+					} else if($scope.tts == 'iflytek'){
+						$scope.tts_username = $scope.tts_iflytek_app_id;
+						$scope.tts_password = '';
+					}
+
+					$http.get('/sense?thinkURL=' + $scope.thinkURL + "&senseId=" + $scope.senseId + 
+						"&language=" + $scope.language + "&stt=" + $scope.stt + "&tts=" + $scope.tts +
+						"&stt_username=" + $scope.stt_username + "&stt_password=" + $scope.stt_password +
+						"&tts_username=" + $scope.tts_username + "&tts_password=" + $scope.tts_password) 
+
 					.success(function(response, status) {
 						window.alert('Successfully Update Configuration');
 						console.log(response);

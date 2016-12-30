@@ -1,9 +1,37 @@
 {
-  "init": true,
-  "thinkURL": "https://todo-bot.mybluemix.net",
-  "senseId": "alpha",
+  "thinkURL": "thinkURL",
+  "senseId": "senseId",
   "log": {
     "file": "./sense.log",
     "level": "debug"
+  },
+  "dialog": {
+    "lang": "undefined",
+    "sttEngine": "undefined",
+    "ttsEngine": "undefined",
+    "stt": {
+      "watson": {
+        "username": "username",
+        "passwd": "passwd"
+      },
+      "google": {
+        "username": "username",
+        "passwd": "passwd"
+      }
+    },
+    "tts": {
+      "watson": {
+        "username": "username",
+        "passwd": "passwd"
+      },
+      "iflytek": {
+        "appid": "appid"
+      },
+      "itri": {
+        "username": "username",
+        "passwd": "passwd",
+        "speaker": "Bruce"
+      }
+    }
   }
 }
