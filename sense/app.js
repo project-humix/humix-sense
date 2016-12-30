@@ -78,8 +78,8 @@ function onListening() {
 console.log('##### Web Server Started #####');
 
 // determine whether config is already set or not
-var init = JSON.parse(fs.readFileSync('config.json', 'utf8')).init;
-if (!init){
-	sense.humixSenseStart();
-}
-
+fs.stat('.init', function(err, stat) {
+    if(err == null) {
+        sense.humixSenseStart();
+    }
+});

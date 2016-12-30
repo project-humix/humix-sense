@@ -49,7 +49,6 @@ app.get('/sense', function(req, res){
 
 	var config = require('./config.json');
 
-	config.init = false;
 	config.thinkURL = req.query.thinkURL;
 	config.senseId = req.query.senseId;
 
@@ -82,12 +81,17 @@ app.get('/sense', function(req, res){
 	} else if(req.query.tts == 'iflytek'){
 
 		config.dialog.tts.iflytek.appid = req.query.tts_username;
-		
+
 	}
 
 	fs.writeFile('./config.json', JSON.stringify(config, null, 2), function (err) {
 		if (err) return console.log(err);
 		console.log("update config: " + JSON.stringify(config));
+	});
+
+	fs.writeFile('./.init', 'Humix Sense has been initialized.', function (err) {
+		if (err) return console.log(err);
+		console.log("write .init file");
 	});
 	
 	sense.humixSenseStart();
