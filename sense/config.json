@@ -1,6 +1,6 @@
 {
-  "thinkURL": "https://todo-bot.mybluemix.net",
-  "senseId": "alpha",
+  "thinkURL": "thinkURL",
+  "senseId": "senseId",
   "log": {
     "file": "./sense.log",
     "level": "debug"
