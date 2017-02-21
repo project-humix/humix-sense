@@ -16,7 +16,7 @@ Before you start configuring your humix sense, make sure you have a `humix think
 
 We have simplified the steps required to setup Humix Sense by providing a base image. You can download the image here
 
-Image location ：[humix-sense.img](http://119.81.185.45/humix_image/humix-sense-1.0.gz)
+Image location ：[humix-sense.img](https://ibm.box.com/s/o22lyjdpq671q9eq3jpdtqdrq4m6h11t)
 
 To save disk space, the image is compressed. So to copy the image into your SD card ( at least 16G ), run ( you need to replace the path and your sd disk number)
 

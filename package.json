@@ -1,49 +1,47 @@
 {
-  "name": "humix-sense",
-  "version": "1.0.0",
-  "description": "Humix Sense, the little brain of Humix framework",
-  "main": "index.js",
-  "scripts": {
-    "test": "mocha",
-    "start": "./start.sh"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/project-humix/humix-sense.git"
-  },
-  "contributors": [
-    {
-      "name": "Jeffrey Liu",
-      "email": "jeffffrey@gmail.com"
+    "name": "humix-sense",
+    "version": "1.0.0",
+    "description": "Humix Sense, the little brain of Humix framework",
+    "main": "index.js",
+    "scripts": {
+        "test": "mocha",
+        "start": "./start.sh"
     },
-    {
-      "name": "Richard Chou",
-      "email": "richard925215@gmail.com"
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/project-humix/humix-sense.git"
     },
-    {
-      "name": "Norman Kung",
-      "email": "as93717913@hotmail.com"
+    "contributors": [{
+        "name": "Jeffrey Liu",
+        "email": "jeffffrey@gmail.com"
+    }, {
+        "name": "Richard Chou",
+        "email": "richard925215@gmail.com"
+    }, {
+        "name": "Norman Kung",
+        "email": "as93717913@hotmail.com"
+    }, {
+        "name": "Prinz Hung",
+        "email": "prinzh@gmail.com"
+    }, {
+        "name": "Jimmy Liao",
+        "email": "taiwan.jimmyliao@gmail.com"
+    }],
+    "license": "Apache-2.0",
+    "dependencies": {
+        "async": "^2.1.4",
+        "humix-logger": "^1.0.4",
+        "nats": "^0.6.4",
+        "request": "^2.40.0",
+        "respawn": "^2.3.0",
+        "ws": "^1.1.1"
     },
-    {
-      "name": "Prinz Hung",
-      "email": "prinzh@gmail.com"
+    "devDependencies": {
+        "chai": "^3.3.0",
+        "mocha": "^3.2.0",
+        "should": "^11.1.2"
+    },
+    "engines": {
+        "node": ">=4.2"
     }
-  ],
-  "license": "Apache-2.0",
-  "dependencies": {
-    "async": "^2.1.4",
-    "humix-logger": "^1.0.4",
-    "nats": "^0.6.4",
-    "request": "^2.40.0",
-    "respawn": "^2.3.0",
-    "ws": "^1.1.1"
-  },
-   "devDependencies": {
-    "chai": "^3.3.0",
-    "mocha": "^3.2.0",
-    "should": "^11.1.2"
-  },
-  "engines": {
-    "node": ">=4.2"
-  }
 }
